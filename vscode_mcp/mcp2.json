@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "mlflow-mcp": {
+      "command": "bash",
+      "args": [
+        "-c",
+        "source ~/mlopsdvc/myvenv/bin/activate && mlflow mcp run"
+      ],
+      "env": {
+        "MLFLOW_TRACKING_URI": "http://localhost:5000"
+      },
+      "disabled": false
+    }
+  }
+}
+

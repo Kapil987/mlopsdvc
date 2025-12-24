@@ -136,3 +136,24 @@ M       wine_ds.csv
 https://community-charts.github.io/docs/charts/mlflow/usage
 kubectl --namespace default port-forward --address 0.0.0.0 $POD_NAME 8080:$CONTAINER_PORT
 kubectl --namespace default port-forward --address 0.0.0.0 deployment/your-deployment-name 8080:$CONTAINER_PORT
+sudo apt install kubectx #installs both kubectx and kubens
+
+#### Postgres
+-- 1. Create the user
+CREATE USER mlflow_user WITH PASSWORD 'mlflow';
+
+-- 2. Create the database
+CREATE DATABASE mlflow1;
+
+-- 3. Connect to the new database (CRITICAL STEP)
+\c mlflow1
+
+-- 4. Grant full ownership of the database to the user
+GRANT ALL PRIVILEGES ON DATABASE mlflow1 TO mlflow_user;
+
+-- 5. Grant permission to create tables in the public schema (Required for Postgres 15+)
+GRANT USAGE, CREATE ON SCHEMA public TO mlflow_user;
+
+-- 6. Ensure the user can access future tables created during migrations
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO mlflow_user;
+
