@@ -17,9 +17,107 @@ dvc init
 git branch -m main
 git remote add origin YOUR_REPO
 
-dvc add DATASET.csv
-dvc status
-
 dvc remote add s3://bucketname
 dvc remote list
-dvc remote default ml1
+dvc remote default REMOTE-BACKEND-NAME
+
+dvc add DATASET.csv
+dvc status
+git add .gitignore wine_ds.csv.dvc
+dvc push
+
+- edit the data.csv
+- dvc status
+- dvc add data.csv
+- git add data.csv.dvc
+- git commit -m "some comments"
+
+Here is theworkflow to switch between your 3 versions:
+
+### 1. Identify the Version (Git Log)
+
+First, find the commit hash for the version you want to see.
+
+```bash
+git log --oneline wine_ds.csv.dvc
+
+```
+
+*Let's assume your hashes are `43cd6a1` (v1), `3220f26` (v2), and a new one for v3.*
+
+---
+
+### 2. Switch to the Target Version
+
+You have two ways to do this:
+
+#### A. The "Temporary Peek" (Recommended)
+
+If you just want to see the old data without moving your whole project back in time:
+
+```bash
+# 1. Get the old .dvc file from Git history
+git checkout 43cd6a1 wine_ds.csv.dvc
+
+# 2. Tell DVC to sync the .csv file to match that old pointer
+dvc checkout
+
+```
+
+#### B. The "Full Rollback"
+
+If you want to move your entire repository (code and data) back to that point:
+
+```bash
+git checkout 43cd6a1
+dvc checkout
+
+```
+
+---
+
+### 3. Verify and Inspect
+
+Now that the file has been swapped, verify it is the one you expected:
+
+```bash
+# Check the first few lines
+head -n 5 wine_ds.csv
+
+# Check the DVC status (it should show no changes)
+dvc status
+
+```
+
+---
+
+### 4. How to Return to the Latest Version
+
+Once you are done viewing the old data, you should move back to the "present" so you don't accidentally start working on old files.
+
+```bash
+# 1. Bring the latest metadata back
+git checkout main wine_ds.csv.dvc
+
+# 2. Sync the data back to the latest version
+dvc checkout
+
+```
+
+example
+myvenv) ubuntu@ip-172-31-26-84:~/mlopsdvc$ git log --oneline
+ea4db53 (HEAD -> main) 11 line duplicated1
+bb835ba initial wine data added
+745e29a first commit without data
+(myvenv) ubuntu@ip-172-31-26-84:~/mlopsdvc$ git checkout bb835ba wine_ds.csv.dvc
+Updated 1 path from 60ca25c
+(myvenv) ubuntu@ip-172-31-26-84:~/mlopsdvc$ dvc checkout
+Building workspace index                                                              |1.00 [00:00, 39.7entry/s]
+Comparing indexes                                                                    |2.00 [00:00, 2.00kentry/s]
+Applying changes                                                                      |1.00 [00:00,   165file/s]
+M       wine_ds.csv
+(myvenv) ubuntu@ip-172-31-26-84:~/mlopsdvc$ 
+
+#### MLFLOW
+- pip install mlflow
+- powershell -c "irm https://astral.sh/uv/install.ps1 | iex"

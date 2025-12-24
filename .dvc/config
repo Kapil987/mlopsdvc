@@ -1,0 +1,4 @@
+[core]
+    remote = mldata1
+['remote "mldata1"']
+    url = s3://mybucketfordvc1290
