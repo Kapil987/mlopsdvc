@@ -5,6 +5,16 @@ source .venv/bin/activate
 
 download dataset from https://www.kaggle.com/datasets/yasserh/wine-quality-dataset?resource=download
 
+#### Amazon Q
+curl --proto '=https' --tlsv1.2 -sSf "https://desktop-release.q.us-east-1.amazonaws.com/latest/q-x86_64-linux.zip" -o q.zip
+echo 'export PATH="$HOME/q/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+log in via your builder id and then type below command
+Open this URL: https://view.awsapps.com/start/#/device?user_code=CWQH-BMTV
+Device authorized
+Logged in successfully
+
 #### WINDOWS
 conda init bash
 then 
@@ -121,3 +131,8 @@ M       wine_ds.csv
 #### MLFLOW
 - pip install mlflow
 - powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+#### Kuberntes
+https://community-charts.github.io/docs/charts/mlflow/usage
+kubectl --namespace default port-forward --address 0.0.0.0 $POD_NAME 8080:$CONTAINER_PORT
+kubectl --namespace default port-forward --address 0.0.0.0 deployment/your-deployment-name 8080:$CONTAINER_PORT
